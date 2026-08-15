@@ -3,28 +3,24 @@ from django.db import models
 
 
 class AdvertisementStatusChoices(models.TextChoices):
-    """Статусы объявления."""
-
-    OPEN = "OPEN", "Открыто"
-    CLOSED = "CLOSED", "Закрыто"
+    OPEN = 'OPEN', 'Открыто'
+    CLOSED = 'CLOSED', 'Закрыто'
 
 
 class Advertisement(models.Model):
-    """Объявление."""
-
     title = models.TextField()
     description = models.TextField(default='')
-    status = models.TextField(
+    status = models.CharField(
         choices=AdvertisementStatusChoices.choices,
-        default=AdvertisementStatusChoices.OPEN
+        max_length=10,
+        default=AdvertisementStatusChoices.OPEN,
     )
+    created_at = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        related_name='advertisements',
     )
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+
+    def __str__(self):
+        return self.title
